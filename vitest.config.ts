@@ -5,7 +5,9 @@ import path from 'node:path';
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: 'jsdom',
+    // Лёгкое node-окружение по умолчанию; компонентные тесты включают jsdom
+    // через директиву `// @vitest-environment jsdom` в самом файле.
+    environment: 'node',
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
   },
