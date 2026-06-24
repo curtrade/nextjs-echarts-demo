@@ -10,6 +10,9 @@ export default defineConfig({
     environment: 'node',
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
+    // Файлы прогоняются последовательно: запуск jsdom-окружения тяжёлый,
+    // а параллельные воркеры под нагрузкой ловят таймаут старта.
+    fileParallelism: false,
   },
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
