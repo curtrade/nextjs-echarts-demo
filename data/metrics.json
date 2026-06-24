@@ -1,20 +1,15 @@
 {
   "currency": "USD",
   "points": [
-    { "date": "2026-06-01", "cost": 31.2, "cpa": 10.4, "roi": 120.5, "conversions": 30 },
-    { "date": "2026-06-02", "cost": 28.75, "cpa": 11.1, "roi": 118.2, "conversions": 26 },
-    { "date": "2026-06-03", "cost": 33.4, "cpa": 9.8, "roi": 132.1, "conversions": 34 },
-    { "date": "2026-06-04", "cost": 35.1, "cpa": 10.2, "roi": 140.0, "conversions": 34 },
-    { "date": "2026-06-05", "cost": 30.9, "cpa": 12.3, "roi": 125.6, "conversions": 25 },
-    { "date": "2026-06-06", "cost": 38.6, "cpa": 11.5, "roi": 150.3, "conversions": 33 },
-    { "date": "2026-06-07", "cost": 41.2, "cpa": 10.9, "roi": 155.8, "conversions": 38 },
-    { "date": "2026-06-08", "cost": 37.45, "cpa": 12.8, "roi": 145.2, "conversions": 29 },
-    { "date": "2026-06-09", "cost": 42.1, "cpa": 11.2, "roi": 158.4, "conversions": 37 },
-    { "date": "2026-06-10", "cost": 39.8, "cpa": 13.1, "roi": 150.9, "conversions": 30 },
-    { "date": "2026-06-11", "cost": 43.55, "cpa": 11.7, "roi": 159.3, "conversions": 37 },
-    { "date": "2026-06-12", "cost": 44.36, "cpa": 12.1, "roi": 161.47, "conversions": 36 },
-    { "date": "2026-06-13", "cost": 47.2, "cpa": 11.3, "roi": 168.1, "conversions": 41 },
-    { "date": "2026-06-14", "cost": 45.9, "cpa": 12.6, "roi": 162.7, "conversions": 36 },
-    { "date": "2026-06-15", "cost": 49.3, "cpa": 10.8, "roi": 175.4, "conversions": 45 }
+    { "date": "2026-06-10", "cost": 2.04, "cpa": 0.68, "roi": 605.0, "conversions": 3 },
+    { "date": "2026-06-11", "cost": 21.0, "cpa": 0.92, "roi": 320.0, "conversions": 14 },
+    { "date": "2026-06-12", "cost": 44.36, "cpa": 1.23, "roi": 161.47, "conversions": 36 },
+    { "date": "2026-06-13", "cost": 52.0, "cpa": 0.8, "roi": 92.0, "conversions": 45 },
+    { "date": "2026-06-14", "cost": 49.0, "cpa": 1.12, "roi": 64.0, "conversions": 50 },
+    { "date": "2026-06-15", "cost": 53.0, "cpa": 0.88, "roi": 57.0, "conversions": 57 },
+    { "date": "2026-06-16", "cost": 55.65, "cpa": 0.99, "roi": 60.0, "conversions": 63 },
+    { "date": "2026-06-17", "cost": 58.0, "cpa": 1.28, "roi": 78.0, "conversions": 70 },
+    { "date": "2026-06-18", "cost": 61.0, "cpa": 0.95, "roi": 105.0, "conversions": 76 },
+    { "date": "2026-06-19", "cost": 63.5, "cpa": 1.05, "roi": 140.0, "conversions": 82 }
   ]
 }

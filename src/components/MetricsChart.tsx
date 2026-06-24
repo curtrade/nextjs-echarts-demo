@@ -1,21 +1,36 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import type { CSSProperties } from 'react';
 import type { MetricsDataset } from '@/lib/metrics/types';
 import { buildChartOption } from '@/lib/chart/buildOption';
 import { useECharts } from '@/hooks/useECharts';
+import styles from './MetricsChart.module.css';
 
 type Status = 'loading' | 'error' | 'ready';
 
-const overlayStyle: CSSProperties = {
-  position: 'absolute',
-  inset: 0,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: 8,
-};
+// Колонка «якорей шкал» слева, как на референсе (декоративные минимумы осей).
+const AXIS_PILLS = ['Tdy', '0%', '$0', '$0', '0', '0', '—'];
+
+function EditButton() {
+  return (
+    <button type="button" className={styles.editBtn} aria-label="Редактировать">
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <path d="M12 20h9" />
+        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+      </svg>
+      <span aria-hidden style={{ fontSize: 10 }}>
+        ▾
+      </span>
+    </button>
+  );
+}
 
 export function MetricsChart() {
   const [dataset, setDataset] = useState<MetricsDataset | null>(null);
@@ -55,26 +70,47 @@ export function MetricsChart() {
   const isEmpty = status === 'ready' && dataset?.points.length === 0;
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: 400 }}>
-      <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
-      {status === 'loading' && (
-        <div role="status" style={overlayStyle}>
-          Загрузка…
+    <div className={styles.panel}>
+      <EditButton />
+      <div className={styles.body}>
+        <div className={styles.axisCol} aria-hidden>
+          {AXIS_PILLS.map((label, i) => (
+            <span
+              key={`${label}-${i}`}
+              className={[
+                styles.pill,
+                i === 0 ? styles.pillToday : '',
+                label === '—' ? styles.pillDash : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            >
+              {label}
+            </span>
+          ))}
         </div>
-      )}
-      {status === 'error' && (
-        <div role="alert" style={overlayStyle}>
-          Не удалось загрузить данные.
-          <button type="button" onClick={retry}>
-            Повторить
-          </button>
+        <div className={styles.plot}>
+          <div ref={containerRef} className={styles.chart} />
+          {status === 'loading' && (
+            <div role="status" className={styles.overlay}>
+              Загрузка…
+            </div>
+          )}
+          {status === 'error' && (
+            <div role="alert" className={styles.overlay}>
+              Не удалось загрузить данные.
+              <button type="button" onClick={retry}>
+                Повторить
+              </button>
+            </div>
+          )}
+          {isEmpty && (
+            <div role="status" className={styles.overlay}>
+              Нет данных за выбранный период
+            </div>
+          )}
         </div>
-      )}
-      {isEmpty && (
-        <div role="status" style={overlayStyle}>
-          Нет данных за выбранный период
-        </div>
-      )}
+      </div>
     </div>
   );
 }

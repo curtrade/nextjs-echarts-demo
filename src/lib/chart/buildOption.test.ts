@@ -30,7 +30,7 @@ describe('buildChartOption', () => {
 
   it('maps series to the correct y-axis', () => {
     const byName = Object.fromEntries(series(dataset).map((s) => [s.name, s.yAxisIndex]));
-    expect(byName).toEqual({ Cost: 0, CPA: 0, ROI: 1, Conversions: 2 });
+    expect(byName).toEqual({ Cost: 0, CPA: 0, 'ROI confirmed': 1, Conversions: 2 });
   });
 
   it('uses square markers for conversions', () => {
@@ -44,7 +44,7 @@ describe('buildChartOption', () => {
   });
 
   it('smooths the ROI line', () => {
-    expect(series(dataset).find((s) => s.name === 'ROI')?.smooth).toBe(true);
+    expect(series(dataset).find((s) => s.name === 'ROI confirmed')?.smooth).toBe(true);
   });
 
   it('formats x-axis dates as DD.MM.YYYY', () => {
@@ -58,7 +58,7 @@ describe('formatTooltip', () => {
     const html = formatTooltip(
       [
         { axisValueLabel: '12.06.2026', seriesName: 'Cost', value: 44.36, marker: '' },
-        { axisValueLabel: '12.06.2026', seriesName: 'ROI', value: 161.47, marker: '' },
+        { axisValueLabel: '12.06.2026', seriesName: 'ROI confirmed', value: 161.47, marker: '' },
         { axisValueLabel: '12.06.2026', seriesName: 'Conversions', value: 36, marker: '' },
       ],
       '$',
@@ -67,5 +67,6 @@ describe('formatTooltip', () => {
     expect(html).toContain('$44.36');
     expect(html).toContain('161.47%');
     expect(html).toContain('36');
+    expect(html).toContain('ROI confirmed');
   });
 });
