@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# График метрик (Cost / CPA / ROI / Conversions)
 
-## Getting Started
+Интерактивный график маркетинговых метрик на **Next.js 16 + React 19 + Apache ECharts**.
+Данные загружаются из JSON-файла через форму. По умолчанию график пуст.
 
-First, run the development server:
+## Стек
+
+- Next.js 16 (App Router), React 19, TypeScript
+- Apache ECharts — отрисовка графика
+- zod — валидация загружаемых данных
+- Vitest + React Testing Library — тесты
+
+## Установка
+
+```bash
+npm install
+```
+
+## Запуск
+
+### Дев-режим
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Открой <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+> ⚠️ Проект лежит на медленном диске, поэтому **первая компиляция страницы может занять
+> 1–3 минуты** — это нормально, дальше работает быстро (горячая перезагрузка).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Прод-режим (быстрый старт)
 
-## Learn More
+```bash
+npm run build
+npm start
+```
 
-To learn more about Next.js, take a look at the following resources:
+Сборка компилирует всё один раз, дальше страница отдаётся мгновенно. Рекомендуется,
+если важна скорость загрузки.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Как инициализировать график
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Открой <http://localhost:3000> — график пуст, показывает подсказку
+   «Загрузите JSON, чтобы построить график».
+2. Нажми на поле выбора файла, выбери `.json` нужного формата (см. ниже).
+3. Нажми **«Загрузить JSON»** — данные провалидируются на сервере и график построится.
 
-## Deploy on Vercel
+Данные хранятся только в состоянии страницы и сбрасываются при перезагрузке.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Формат JSON
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```json
+{
+  "currency": "USD",
+  "points": [
+    { "date": "2026-06-12", "cost": 44.36, "cpa": 1.23, "roi": 161.47, "conversions": 36 },
+    { "date": "2026-06-13", "cost": 52.0, "cpa": 0.8, "roi": 92.0, "conversions": 45 }
+  ]
+}
+```
+
+- `date` — дата в формате `YYYY-MM-DD`;
+- `cost` — затраты (валюта);
+- `cpa` — цена за действие (валюта);
+- `roi` — рентабельность (проценты);
+- `conversions` — число конверсий (целое);
+- `currency` — код валюты (по умолчанию `USD`).
+
+Готовый пример лежит в `data/metrics.json`.
+
+## API
+
+- `GET /api/metrics` — отдаёт сэмпл из `data/metrics.json` (для проверки/демо).
+- `POST /api/metrics` — приём загрузки: `multipart/form-data` с полем `file` (JSON-файл).
+  Возвращает разобранный датасет (`200`) или `{ "error": "..." }` (`400`).
+
+## Тесты и линт
+
+```bash
+npm test          # прогон всех тестов (Vitest)
+npm run lint      # ESLint
+npm run format    # Prettier --write
+```
+
+## Примечание про скорость
+
+Проект находится на диске `/dev/sdb2`, который медленный на запись, из-за чего
+дев-компиляция Turbopack долгая. Если нужна быстрая разработка — перенеси проект на
+системный диск (раздел `/`). Перенос кэша `.next` отдельным симлинком не работает
+(ломает резолв модулей Turbopack).
