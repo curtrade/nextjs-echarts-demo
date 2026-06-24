@@ -1,12 +1,10 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import type { MetricsDataset } from '@/lib/metrics/types';
 import { buildChartOption } from '@/lib/chart/buildOption';
 import { useECharts } from '@/hooks/useECharts';
 import styles from './MetricsChart.module.css';
-
-type Status = 'loading' | 'error' | 'ready';
 
 // Колонка «якорей шкал» слева, как на референсе (декоративные минимумы осей).
 const AXIS_PILLS = ['Tdy', '0%', '$0', '$0', '0', '0', '—'];
@@ -32,42 +30,14 @@ function EditButton() {
   );
 }
 
-export function MetricsChart() {
-  const [dataset, setDataset] = useState<MetricsDataset | null>(null);
-  const [status, setStatus] = useState<Status>('loading');
-  const [reloadKey, setReloadKey] = useState(0);
-
-  // Загружаем данные на маунте и при каждом retry (reloadKey).
-  // setState вызывается только в async-колбэках, без синхронного setState в теле эффекта.
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch('/api/metrics', { signal: controller.signal })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-        return res.json();
-      })
-      .then((data: MetricsDataset) => {
-        setDataset(data);
-        setStatus('ready');
-      })
-      .catch(() => {
-        if (!controller.signal.aborted) setStatus('error');
-      });
-    return () => controller.abort();
-  }, [reloadKey]);
-
-  const retry = () => {
-    setStatus('loading');
-    setReloadKey((key) => key + 1);
-  };
-
+export function MetricsChart({ dataset }: { dataset: MetricsDataset | null }) {
   const option = useMemo(
     () => (dataset && dataset.points.length > 0 ? buildChartOption(dataset) : null),
     [dataset],
   );
   const containerRef = useECharts(option);
 
-  const isEmpty = status === 'ready' && dataset?.points.length === 0;
+  const isEmpty = !dataset || dataset.points.length === 0;
 
   return (
     <div className={styles.panel}>
@@ -91,22 +61,9 @@ export function MetricsChart() {
         </div>
         <div className={styles.plot}>
           <div ref={containerRef} className={styles.chart} />
-          {status === 'loading' && (
-            <div role="status" className={styles.overlay}>
-              Загрузка…
-            </div>
-          )}
-          {status === 'error' && (
-            <div role="alert" className={styles.overlay}>
-              Не удалось загрузить данные.
-              <button type="button" onClick={retry}>
-                Повторить
-              </button>
-            </div>
-          )}
           {isEmpty && (
             <div role="status" className={styles.overlay}>
-              Нет данных за выбранный период
+              Загрузите JSON, чтобы построить график
             </div>
           )}
         </div>
