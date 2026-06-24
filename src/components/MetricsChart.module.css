@@ -5,6 +5,7 @@
   border-radius: 12px;
   padding: 14px 14px 12px;
   /* Компактный размер как в оригинале (панель ~1.85:1), не на всю ширину. */
+  width: 100%;
   max-width: 640px;
   margin: 0 auto;
 }
