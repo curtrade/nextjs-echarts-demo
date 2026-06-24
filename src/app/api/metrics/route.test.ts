@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('node:fs/promises', () => ({ readFile: vi.fn() }));
 
 import { readFile } from 'node:fs/promises';
-import { GET } from './route';
+import { GET, POST } from './route';
 
 const dataset = {
   currency: 'USD',
@@ -34,5 +34,40 @@ describe('GET /api/metrics', () => {
     );
     const res = await GET();
     expect(res.status).toBe(500);
+  });
+});
+
+function uploadRequest(file: File): Request {
+  const body = new FormData();
+  body.append('file', file);
+  return new Request('http://localhost/api/metrics', { method: 'POST', body });
+}
+
+describe('POST /api/metrics', () => {
+  it('returns the parsed dataset for a valid file', async () => {
+    const file = new File([JSON.stringify(dataset)], 'metrics.json', {
+      type: 'application/json',
+    });
+    const res = await POST(uploadRequest(file));
+    expect(res.status).toBe(200);
+    await expect(res.json()).resolves.toEqual(dataset);
+  });
+
+  it('returns 400 when no file is provided', async () => {
+    const res = await POST(
+      new Request('http://localhost/api/metrics', { method: 'POST', body: new FormData() }),
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it('returns 400 on invalid JSON', async () => {
+    const res = await POST(uploadRequest(new File(['not json'], 'metrics.json')));
+    expect(res.status).toBe(400);
+  });
+
+  it('returns 400 when data does not match the schema', async () => {
+    const bad = JSON.stringify({ currency: 'USD', points: [{ date: 'bad' }] });
+    const res = await POST(uploadRequest(new File([bad], 'metrics.json')));
+    expect(res.status).toBe(400);
   });
 });
