@@ -68,7 +68,6 @@ npm start
 
 ## API
 
-- `GET /api/metrics` — отдаёт сэмпл из `data/metrics.json` (для проверки/демо).
 - `POST /api/metrics` — приём загрузки: `multipart/form-data` с полем `file` (JSON-файл).
   Возвращает разобранный датасет (`200`) или `{ "error": "..." }` (`400`).
 
